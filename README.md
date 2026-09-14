@@ -465,37 +465,17 @@ The complete numerical evaluation results are provided in the `results/` directo
 
 ## Failure Analysis
 
-### 1. Increasing demonstration diversity did not automatically improve generalization
+### 1. More diverse demonstrations did not improve robustness
 
-The Stage 2 policy achieved strong performance on a discrete grid:
-
-```text
-86.7%
-```
-
-However, after adding 50 continuous-position and orientation demonstrations and retraining on the combined 100-episode dataset, performance on the continuous evaluation dropped to:
-
-```text
-33.3%
-```
-
-This suggests that simply expanding the demonstration distribution is not sufficient to guarantee improved generalization.
+The mixed 100-demonstration policy achieved **33.3%** on continuous poses and **40.7%** on the original grid, where Stage 2 achieved **86.7%**. Performance therefore declined even on the earlier evaluation distribution. Greater trajectory variation may have made learning harder, but these experiments do not isolate the effects of dataset size, pose diversity, or training budget.
 
 ---
 
-### 2. Performance also degraded on the original distribution
+### 2. Data quality and top-view occlusion
 
-The mixed 100-demonstration policy achieved only:
+The arm and gripper can obscure the cube in the top view during approach and closure, making its pose and grasp outcome harder to observe. The side camera provides another view, but whether it fully compensates for this occlusion has not been evaluated.
 
-```text
-40.7%
-```
-
-when reevaluated on the original Stage 2 grid.
-
-This indicates that the performance decrease cannot be explained only by the higher difficulty of the continuous-position evaluation.
-
-The additional demonstrations introduced greater trajectory and pose diversity, which may have made the conditional action distribution more difficult for the policy to represent consistently.
+Demonstration consistency also matters: differences in approach paths, pauses, and grasp timing can create conflicting action targets for similar observations. Camera placement and episode-level visual review should accompany dataset expansion. Numerical integrity checks alone do not establish demonstration quality; the contribution of these factors to the performance drop remains unmeasured.
 
 ---
 
