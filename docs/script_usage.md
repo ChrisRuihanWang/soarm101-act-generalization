@@ -1,5 +1,7 @@
 # 通用脚本用法
 
+真实策略执行使用 `scripts/rollout.py`，与离线 `check.py rollout` 分开。主评估配置、必需的 `ROBOT_PORT` 和独立 25 步消融用法见 [rollout 文档](rollout.md)。
+
 在仓库根目录、具有 `requirements.txt` 中依赖的 Python 环境下运行。检查工具适用于本项目的 SO-101 六关节 LeRobot 数据，各阶段通过路径区分；不自动判定抓取任务成功。
 
 ## 数据质量检查

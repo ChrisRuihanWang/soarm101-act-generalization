@@ -1,0 +1,45 @@
+{
+  "fps": 30,
+  "episode_time_s": 20,
+  "reset_time_s": 30,
+  "n_action_steps": 100,
+  "display_data": false,
+  "robot": {
+    "type": "so101_follower",
+    "id": "so101_follower",
+    "max_relative_target": 10.0,
+    "cameras": {
+      "top": {
+        "type": "opencv",
+        "index_or_path": "/dev/video2",
+        "width": 640,
+        "height": 480,
+        "fps": 30,
+        "fourcc": "MJPG",
+        "backend": 200
+      },
+      "side": {
+        "type": "opencv",
+        "index_or_path": "/dev/video4",
+        "width": 640,
+        "height": 480,
+        "fps": 30,
+        "fourcc": "MJPG",
+        "backend": 200
+      }
+    }
+  },
+  "policies": {
+    "stage2": "outputs/act_grid5_t1_30k/checkpoints/last/pretrained_model",
+    "stage3": "outputs/act_stage23_100ep_30k/checkpoints/last/pretrained_model"
+  },
+  "tasks": {
+    "stage2": "Pick up the red cube from its marked start position and place it inside the fixed box.",
+    "stage3": "Pick up the red cube from its current position and place it inside the fixed box.",
+    "grid-retest": "Pick up the red cube from its marked start position and place it inside the fixed box."
+  },
+  "ablation": {
+    "n_action_steps": 25,
+    "description": "Separate inference ablation; no performance improvement and more abrupt robot motion. Excluded from main evaluation."
+  }
+}

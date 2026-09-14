@@ -202,6 +202,24 @@ configs/
 
 ## Evaluation Protocol
 
+### Main ACT Rollout Settings
+
+All main evaluations use **30 FPS**, **20 s episodes**, **30 s resets**, and **`n_action_steps=100`**, with `robot.type=so101_follower`, `robot.max_relative_target=10.0`, and `display_data=false`.
+
+The top camera uses `/dev/video2` and the side camera `/dev/video4`; both use 640×480, 30 FPS, MJPG capture, and backend 200. Stage 2 uses the `act_grid5_t1_30k` policy; Stage 3 and original-grid retests use `act_stage23_100ep_30k`, both at `checkpoints/last/pretrained_model`.
+
+The reusable launcher requires **`ROBOT_PORT`** with no default. Stage 2 historically used `/dev/ttyACM1`; later Stage 3 used `/dev/ttyACM0` with only the follower connected. Select the currently connected follower explicitly.
+
+```bash
+ROBOT_PORT=/dev/ttyACM1 python scripts/rollout.py stage2 \
+  data/rollout_stage2_new_r1 OWNER/rollout_stage2_new_r1 --num-episodes 9 --dry-run
+
+ROBOT_PORT=/dev/ttyACM0 python scripts/rollout.py stage3 \
+  data/rollout_stage3_new_r1 OWNER/rollout_stage3_new_r1 --num-episodes 9 --dry-run
+```
+
+`--dry-run` only previews the command. See [rollout configuration and usage](docs/rollout.md) for execution, grid retests, model overrides, and runtime reset behavior. The separate **25-step inference ablation** did not improve performance and produced more abrupt motion; it is available only through `--ablation-25` and is excluded from the main evaluation configuration.
+
 ### Stage 2 Evaluation
 
 The Stage 2 policy was evaluated over:
@@ -589,15 +607,14 @@ so101-act-generalization/
 │   ├── train_stage1_fixed.sh
 │   ├── train_stage2_grid.sh
 │   ├── train_stage3_mixed100.sh
-│   ├── rollout_stage2.sh
-│   ├── rollout_stage3.sh
-│   └── rollout_grid_retest.sh
+│   └── rollout.json
 │
 ├── docs/
 │   ├── hardware_setup.md
 │   ├── data_collection.md
 │   ├── training.md
 │   ├── evaluation_protocol.md
+│   ├── rollout.md
 │   └── failure_analysis.md
 │
 ├── results/
@@ -622,6 +639,7 @@ so101-act-generalization/
     ├── check.py
     ├── dataset_utils.py
     ├── play_episode.py
+    ├── rollout.py
     ├── record_fixed.sh
     ├── record_grid5_t1_round.sh
     └── concat_F_rollouts.py
@@ -645,12 +663,9 @@ ACT training and real-robot deployment were performed using the LeRobot training
 
 ## Reproduction
 
-The repository contains the commands used for:
+The repository provides data-collection scripts, dataset inspection tools, saved ACT training configurations, and a reusable rollout launcher using the confirmed evaluation settings. Executable training commands and the complete historical environment remain to be documented.
 
-- Real-robot data collection
-- ACT training
-- Dataset inspection
-- Real-robot rollout evaluation
+The rollout launcher targets the current local LeRobot episodic deployment interface. Its command parsing and automated tests were checked without executing the robot; see [runtime details](docs/rollout.md).
 
 Full raw datasets and checkpoints are not stored directly in the GitHub repository.
 
