@@ -433,7 +433,7 @@ The repository contains selected examples rather than every recorded evaluation 
 | [![Stage 2 seen-position success, R1 episode 4 (index 3), side view at 1× speed](assets/demos/stage2_seen_r1_ep04_side.gif)](videos/stage2_seen_r1_ep04_side.mp4) | [![Stage 2 unseen-position success, R2 episode 7 (index 6), side view at 1× speed](assets/demos/stage2_unseen_r2_ep07_side.gif)](videos/stage2_unseen_r2_ep07_side.mp4) |
 | R1 · Episode 4 (index 3) · Side view · Seen-position success · 1× speed | R2 · Episode 7 (index 6) · Side view · Unseen-position success · 1× speed |
 
-Both Stage 2 examples preserve their complete 19.93-second episodes. Click either preview for the full-resolution MP4. Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
+Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
 <a id="stage3-retry-demo"></a>
 <a id="stage3-success-demo"></a>
@@ -445,7 +445,7 @@ Both Stage 2 examples preserve their complete 19.93-second episodes. Click eithe
 | [![Stage 3 continuous-pose success, R2 episode 4 (index 3), side view at 1× speed](assets/demos/stage3_success_r2_ep04_side.gif)](videos/stage3_success_r2_ep04_side.mp4) | [![Stage 3 retry success, R4 episode 9 (index 8), position I, side view at 1× speed](assets/demos/stage3_retry_r4_ep09_side.gif)](videos/stage3_retry_r4_ep09_side.mp4) |
 | R2 · Episode 4 (index 3) · Side view · Continuous-pose success · 1× speed | R4 · Episode 9 (index 8) · I · Side view · Retry success · 1× speed |
 
-Both Stage 3 examples preserve their complete episodes: 19.93 seconds for continuous-pose success and 19.9 seconds for retry success. Click either preview for the full-resolution MP4. Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
+Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
 ### Failure Cases
 
