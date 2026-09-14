@@ -1,74 +1,657 @@
-# SO-ARM101 ACT Generalization
+# SO-101 ACT Generalization
 
-基于 SO-101 主从机械臂、顶视/侧视摄像头和 LeRobot ACT 策略的抓取与放置实验。任务是将红色方块抓起并放入固定盒子，研究从固定位置示范到多位置、混合示范的策略表现。
+A real-robot study of ACT spatial generalization on SO-101 under progressively expanded demonstration distributions.
 
-本仓库处于整理阶段，第一批提供已有采集、质检、录像回放和失败诊断脚本，以及保存的训练配置。ACT 模型实现、训练循环和机械臂驱动来自外部 LeRobot 安装。
+This project investigates how an **Action Chunking Transformer (ACT)** policy behaves as the training distribution is gradually expanded from fixed pick-and-place demonstrations to discrete spatial variations and finally to continuous object-position and orientation variations.
 
-## 实验记录
+The full pipeline includes real-robot teleoperation, demonstration collection, ACT training, systematic rollout evaluation, and failure analysis.
 
-| 阶段 | 本地数据集 | 示范数 | 配置中的训练步数 | 检查点 |
-|---|---|---:|---:|---|
-| Stage1 固定位置 | `fixed_v2_standardized_30ep` | 30 | 20,000 | `020000` |
-| Stage2 Grid5 | `grid5_t1_50ep` | 50 | 30,000 | `030000` |
-| Stage3 混合数据 | `act_stage23_100ep` | 100 | 30,000 | `030000` |
+---
 
-Stage3 的源数据映射、合并过程及各阶段的泛化测试结果待整理。不要仅根据目录名推断训练与测试位置的重叠关系。
+## Overview
 
-已有 Stage1 摘要记录固定位置测试 **10/10 成功**，见 [原始评估摘要](results/stage1_evaluation_summary.txt)。这是历史人工记录，尚未在本仓库重新验证；其他阶段成功率尚未发布。
+The project is organized into three stages:
 
-## 流程
+1. **Stage 1 — Fixed Pick-and-Place**  
+   Validate the complete real-robot imitation-learning pipeline with a fixed object position.
+
+2. **Stage 2 — Discrete Spatial Generalization**  
+   Train ACT on discrete object positions and evaluate both seen and unseen grid locations.
+
+3. **Stage 3 — Continuous Pose Randomization**  
+   Expand the dataset with continuous object-position and orientation variations and evaluate whether a larger and more diverse demonstration distribution improves generalization.
+
+The main observation is that simply increasing demonstration diversity did **not** automatically improve policy robustness.
+
+The Stage 2 policy achieved strong performance on discrete spatial variations, while the mixed Stage 2+3 policy showed substantially lower success rates on both continuous poses and the original grid distribution.
+
+<!-- TODO: Insert project overview figure / pipeline diagram here -->
+
+---
+
+## Hardware Setup
+
+- **Robot:** Waveshare SO-ARM101
+- **Control:** Leader-follower teleoperation for demonstration collection
+- **Policy deployment:** SO-ARM101 follower arm
+- **Cameras:** Top view + side view
+- **Camera resolution:** 640 × 480
+- **Camera frame rate:** 30 FPS
+- **Training framework:** LeRobot 0.6.1
+- **Policy:** Action Chunking Transformer (ACT)
+- **Training GPU:** NVIDIA RTX 4060 Laptop GPU, 8 GB VRAM
+- **Operating system:** Ubuntu 22.04
+
+The follower arm uses six joint-position dimensions:
 
 ```text
-主臂遥操作 + 从臂 + 双摄像头
-              ↓
-示范采集 → 数据质检 → LeRobot ACT 训练
-                              ↓
-                  策略执行与 rollout 记录
-                              ↓
-                   录像检查、轨迹与失败分析
+shoulder_pan
+shoulder_lift
+elbow_flex
+wrist_flex
+wrist_roll
+gripper
 ```
 
-## 当前目录
+Both robot state and policy action are represented in the same 6-D joint space.
 
-- `scripts/`：15 个现有实验脚本。
-- `configs/stage*_*/`：最终检查点中的训练和策略配置副本。
-- `results/`：已整理的实验摘要；逐次结果 CSV 和图表待补充。
-- `docs/`：当前运行限制、数据和模型说明。
-- `requirements.txt`：离线分析依赖，取自当前本机环境。
+<!-- TODO: Insert hardware setup photo here -->
 
-## 脚本用途
+<!-- TODO: Insert top and side camera views here -->
 
-| 文件 | 用途 |
+---
+
+## Task
+
+The task is a real-robot pick-and-place problem:
+
+> Pick up the red cube and place it inside a fixed target box.
+
+The target box, cameras, robot base, and general workspace remain fixed throughout the project.
+
+The object distribution is progressively expanded across the three stages.
+
+---
+
+## Dataset Design
+
+### Stage 1 — Fixed Position
+
+Stage 1 is designed as a pipeline validation experiment.
+
+- **Demonstrations:** 30
+- **Object position:** Fixed
+- **Object orientation:** Fixed
+- **Target:** Fixed
+- **Cameras:** Top + side
+
+The goal is to verify the complete workflow:
+
+```text
+Teleoperation
+    ↓
+Demonstration Collection
+    ↓
+ACT Training
+    ↓
+Real-Robot Rollout
+```
+
+<!-- TODO: Insert Stage 1 example GIF/video here -->
+
+---
+
+### Stage 2 — Discrete Spatial Generalization
+
+Stage 2 increases the spatial diversity of the demonstrations.
+
+- **Demonstrations:** 50
+- **Training distribution:** Discrete object positions
+- **Evaluation:** 9-position grid
+- **Target:** Fixed
+- **Object orientation:** Approximately fixed
+
+The evaluation grid contains nine spatial locations:
+
+```text
+A   B   C
+D   E   F
+G   H   I
+```
+
+The training distribution covers only part of the evaluation grid, allowing the policy to be tested separately on:
+
+- **Seen positions**
+- **Unseen positions**
+
+This stage evaluates whether ACT can generalize from demonstrated locations to nearby discrete positions that were not directly included in the training distribution.
+
+<!-- TODO: Insert Stage 2 grid illustration here -->
+
+---
+
+### Stage 3 — Continuous Position and Orientation Variation
+
+Stage 3 adds 50 new demonstrations with a broader distribution.
+
+The final training set therefore contains:
+
+```text
+50 Stage 2 demonstrations
++
+50 Stage 3 demonstrations
+=
+100 demonstrations
+```
+
+The new demonstrations introduce:
+
+- Continuous object-position variation
+- Moderate object yaw variation
+- More difficult workspace regions
+- Additional boundary cases
+
+The Stage 3 demonstrations were collected in several batches to increase spatial diversity while keeping the target position and camera configuration fixed.
+
+The final 100-demonstration dataset was used to train a new ACT policy from scratch.
+
+<!-- TODO: Insert Stage 3 data collection examples here -->
+
+---
+
+## Training
+
+All ACT models were trained using LeRobot.
+
+### Stage 1
+
+```text
+Episodes: 30
+Training steps: 20,000
+Batch size: 8
+```
+
+### Stage 2
+
+```text
+Episodes: 50
+Training steps: 30,000
+Batch size: 8
+```
+
+### Stage 3
+
+```text
+Episodes: 100
+Training steps: 30,000
+Batch size: 8
+```
+
+For the 100-episode dataset, 30k training steps with a batch size of 8 correspond to roughly 5.95 dataset passes based on the total number of training samples processed.
+
+The complete training commands are available in:
+
+```text
+configs/
+├── train_stage1_fixed.sh
+├── train_stage2_grid.sh
+└── train_stage3_mixed100.sh
+```
+
+---
+
+## Evaluation Protocol
+
+### Stage 2 Evaluation
+
+The Stage 2 policy was evaluated over:
+
+```text
+5 rounds × 9 grid positions = 45 rollouts
+```
+
+A rollout is counted as a **success** if:
+
+1. The cube is successfully grasped.
+2. The cube is transported to the target.
+3. The cube is placed inside the box before the episode ends.
+
+A rollout is counted as a **retry success** if the first grasp fails but the policy autonomously recovers and completes the task during the same episode.
+
+---
+
+### Stage 3 Core Evaluation
+
+The Stage 3 policy was evaluated over:
+
+```text
+5 rounds × 9 spatial regions = 45 rollouts
+```
+
+Unlike Stage 2, the cube was placed at a new continuous position inside each region.
+
+The five rounds used different approximate yaw conditions:
+
+```text
+R1:   0°
+R2: -15°
+R3: +15°
+R4: -30°
+R5: +30°
+```
+
+This protocol evaluates both spatial and orientation generalization.
+
+---
+
+### Stress Test
+
+An additional five rollouts were performed using:
+
+- Workspace boundary positions
+- Difficult workspace regions
+- Larger orientation perturbations
+
+These rollouts are reported separately from the core evaluation.
+
+---
+
+### Original-Grid Retest
+
+To determine whether the mixed Stage 2+3 model retained the original Stage 2 capability, the 100-demonstration policy was reevaluated on the original fixed grid distribution.
+
+Three rounds were performed:
+
+```text
+3 rounds × 9 positions = 27 rollouts
+```
+
+---
+
+## Results
+
+### Summary
+
+| Policy / Evaluation | Success Rate |
+|---|---:|
+| Stage 2 ACT — overall grid | **39 / 45 (86.7%)** |
+| Stage 2 ACT — seen positions | **23 / 25 (92.0%)** |
+| Stage 2 ACT — unseen positions | **16 / 20 (80.0%)** |
+| Stage 2+3 ACT — continuous pose evaluation | **15 / 45 (33.3%)** |
+| Stage 2+3 ACT — stress test | **1 / 5 (20.0%)** |
+| Stage 2+3 ACT — original grid retest | **11 / 27 (40.7%)** |
+
+---
+
+## Stage 2 Results
+
+The Stage 2 policy achieved:
+
+```text
+39 / 45 = 86.7%
+```
+
+Performance on seen and unseen locations was:
+
+```text
+Seen:   23 / 25 = 92.0%
+Unseen: 16 / 20 = 80.0%
+```
+
+This indicates that ACT was able to generalize reasonably well to discrete spatial locations that were not directly included in the training set.
+
+<!-- TODO: Insert Stage 2 seen-position success GIF -->
+
+<!-- TODO: Insert Stage 2 unseen-position success GIF -->
+
+<!-- TODO: Insert Stage 2 retry-success GIF -->
+
+---
+
+## Stage 3 Continuous Evaluation
+
+The Stage 2+3 model achieved:
+
+```text
+15 / 45 = 33.3%
+```
+
+The per-round performance was:
+
+| Round | Approx. Yaw | Successful Regions | Success Rate |
+|---|---:|---|---:|
+| R1 | 0° | B, G, H | 3 / 9 (33.3%) |
+| R2 | -15° | C, D, F, H | 4 / 9 (44.4%) |
+| R3 | +15° | C, F | 2 / 9 (22.2%) |
+| R4 | -30° | C, D, H, I | 4 / 9 (44.4%) |
+| R5 | +30° | G, I | 2 / 9 (22.2%) |
+| **Total** | — | — | **15 / 45 (33.3%)** |
+
+Five of the 15 successful rollouts required an autonomous retry after an initial grasp failure.
+
+The retry successes were:
+
+```text
+R1: B, G
+R4: D, I
+R5: I
+```
+
+<!-- TODO: Insert Stage 3 continuous-position success GIF -->
+
+<!-- TODO: Insert Stage 3 retry-success GIF -->
+
+---
+
+## Stage 3 Stress Test
+
+The policy succeeded in:
+
+```text
+1 / 5 = 20.0%
+```
+
+stress-test rollouts.
+
+The only successful stress-test episode required a retry and completed the task under a relatively favorable final configuration.
+
+The stress test therefore indicates limited extrapolation toward more extreme workspace and orientation conditions.
+
+<!-- TODO: Insert stress-test GIF -->
+
+---
+
+## Original-Grid Retest
+
+The 100-demonstration policy was reevaluated on the original Stage 2 grid.
+
+Results:
+
+| Round | Successful Positions | Success Rate |
+|---|---|---:|
+| R1 | C, E, F, G, H, I | 6 / 9 (66.7%) |
+| R2 | B, E, G, H | 4 / 9 (44.4%) |
+| R3 | G | 1 / 9 (11.1%) |
+| **Total** | — | **11 / 27 (40.7%)** |
+
+Two of the 11 successful rollouts were retry successes:
+
+```text
+R1: H
+R2: E
+```
+
+The first-attempt success rate was therefore:
+
+```text
+9 / 27 = 33.3%
+```
+
+Performance by position:
+
+| Position | Success |
+|---|---:|
+| A | 0 / 3 |
+| B | 1 / 3 |
+| C | 1 / 3 |
+| D | 0 / 3 |
+| E | 2 / 3 |
+| F | 1 / 3 |
+| G | 3 / 3 |
+| H | 2 / 3 |
+| I | 1 / 3 |
+
+Using the original Stage 2 seen/unseen split:
+
+```text
+Seen positions (A, C, E, G, I):
+7 / 15 = 46.7%
+
+Unseen positions (B, D, F, H):
+4 / 12 = 33.3%
+```
+
+<!-- TODO: Insert original-grid retest success GIF -->
+
+<!-- TODO: Insert original-grid degradation/failure GIF -->
+
+---
+
+## Rollout Examples
+
+Representative real-robot rollouts are shown below.
+
+The repository contains selected examples rather than every recorded evaluation episode.
+
+### Stage 2
+
+| Seen Position | Unseen Position |
 |---|---|
-| `record_fixed_v1.sh`, `record_fixed_v2.sh` | 固定位置遥操作采集，支持续录 |
-| `record_grid5_t1_round.sh` | A/C/E/G/I 五个位置，每轮 5 条，共 10 轮 |
-| `check_dataset.py`, `full_quality_check*.py` | 元信息、时序、数值、视频及延迟补偿跟踪检查 |
-| `check_rollout_*.py` | 对比 rollout 与示范的姿态、动作和夹爪行为 |
-| `diagnose_transport_*.py` | 分析抓取后搬运轨迹及限幅压力 |
-| `play_*episode.py` | 使用 ffplay 播放录像，不会驱动机械臂 |
-| `concat_F_rollouts.py` | 裁剪并拼接 F 位置各轮次的录像 |
+| <!-- TODO: Insert GIF --> | <!-- TODO: Insert GIF --> |
+| Seen-position success | Unseen-position success |
 
-## 环境与运行
+### Stage 3
 
-离线分析依赖：
+| Continuous Pose | Retry / Recovery |
+|---|---|
+| <!-- TODO: Insert GIF --> | <!-- TODO: Insert GIF --> |
+| Continuous-position success | Recovery after failed first grasp |
 
-```bash
-python -m pip install -r requirements.txt
+### Failure Cases
+
+| Stress Test | Representative Failure |
+|---|---|
+| <!-- TODO: Insert GIF --> | <!-- TODO: Insert GIF --> |
+| Difficult pose | Failure after object displacement |
+
+The complete numerical evaluation results are provided in the `results/` directory.
+
+---
+
+## Failure Analysis
+
+### 1. Increasing demonstration diversity did not automatically improve generalization
+
+The Stage 2 policy achieved strong performance on a discrete grid:
+
+```text
+86.7%
 ```
 
-另外需要提供 `ffmpeg`、`ffprobe` 和 `ffplay`。本机环境中观察到 LeRobot `0.6.1`（editable 安装）和 PyTorch `2.11.0+cu128`；版本号本身不能保证复现原始 LeRobot 源码或本地修改，源码来源与提交记录待确认。
+However, after adding 50 continuous-position and orientation demonstrations and retraining on the combined 100-episode dataset, performance on the continuous evaluation dropped to:
 
-现有脚本保留历史实现，默认工作目录为 `~/robotics/so101_act_fixed`。如果克隆到其他位置，需要先修改脚本顶部的 `PROJECT`、`ROOT`、`TRAIN`、`ROLL` 等路径。数据与模型未包含在本仓库，下载方式待发布。
+```text
+33.3%
+```
 
-硬件采集脚本还固定使用 `/dev/ttyACM1`（从臂）、`/dev/ttyACM0`（主臂）、`/dev/video2`（顶视）及 `/dev/video4`（侧视），摄像头为 640×480、30 FPS。运行前需按自己的硬件完成校准并核对映射。
+This suggests that simply expanding the demonstration distribution is not sufficient to guarantee improved generalization.
 
-具体限制见 [当前复现状态](docs/reproducibility_status.md)，配置说明见 [configs/README.md](configs/README.md)。当前尚未提供经过验证的独立训练和策略执行入口。
+---
 
-## 后续补充
+### 2. Performance also degraded on the original distribution
 
-- 硬件安装、校准、采集和评估协议。
-- 训练、rollout 及混合数据合并脚本。
-- 每次评估的成功/失败、重试和干预标注。
-- 成功率图表、网格热力图和有来源记录的演示片段。
-- 数据和模型下载、校验值，以及源码版本记录。
-- 许可证：尚未选择，本次提交不授予额外开源许可。
+The mixed 100-demonstration policy achieved only:
+
+```text
+40.7%
+```
+
+when reevaluated on the original Stage 2 grid.
+
+This indicates that the performance decrease cannot be explained only by the higher difficulty of the continuous-position evaluation.
+
+The additional demonstrations introduced greater trajectory and pose diversity, which may have made the conditional action distribution more difficult for the policy to represent consistently.
+
+---
+
+### 3. Recovery was strongly dependent on the post-failure object state
+
+Several episodes showed autonomous retry behavior.
+
+Recovery was occasionally successful when the first failed grasp left the object close to a familiar state.
+
+However, if the first grasp failure caused the robot to:
+
+- push the cube toward the target box,
+- collide with the box,
+- or push the cube outside the familiar workspace,
+
+the second attempt was rarely successful.
+
+A typical failure sequence was:
+
+```text
+Initial grasp failure
+        ↓
+Object displaced by robot
+        ↓
+Observation moves outside familiar training distribution
+        ↓
+Second attempt fails
+```
+
+This suggests that the observed retry behavior should not be interpreted as a robust general-purpose recovery policy.
+
+---
+
+### 4. Shorter action execution horizon did not improve performance
+
+An additional inference experiment reduced:
+
+```text
+n_action_steps: 100 → 25
+```
+
+to increase the frequency of visual replanning.
+
+This did not produce a clear improvement in task success.
+
+Instead, the robot showed more abrupt motion changes between successive action chunks.
+
+A possible explanation is that more frequent replanning exposed inconsistencies between independently predicted action chunks.
+
+This experiment was treated as a qualitative inference ablation and was not included in the main success-rate table.
+
+---
+
+## Key Takeaways
+
+The main observations from this project are:
+
+1. **ACT can achieve strong real-robot performance on a moderately varied discrete spatial distribution.**
+
+2. **Good performance on unseen discrete positions does not necessarily imply robust generalization to continuous pose variations.**
+
+3. **Increasing dataset size and diversity can introduce additional multimodality and trajectory inconsistency.**
+
+4. **A larger demonstration dataset does not automatically produce a stronger policy.**
+
+5. **Retry behavior is useful but highly dependent on whether the failed interaction keeps the environment close to the training distribution.**
+
+6. **Real-robot evaluation is essential: training loss alone was not predictive of final rollout robustness.**
+
+---
+
+## Repository Structure
+
+```text
+so101-act-generalization/
+│
+├── README.md
+│
+├── LICENSE
+├── .gitignore
+│
+├── configs/
+│   ├── train_stage1_fixed.sh
+│   ├── train_stage2_grid.sh
+│   ├── train_stage3_mixed100.sh
+│   ├── rollout_stage2.sh
+│   ├── rollout_stage3.sh
+│   └── rollout_grid_retest.sh
+│
+├── docs/
+│   ├── hardware_setup.md
+│   ├── data_collection.md
+│   ├── training.md
+│   ├── evaluation_protocol.md
+│   └── failure_analysis.md
+│
+├── results/
+│   ├── stage2_grid_results.csv
+│   ├── stage3_continuous_results.csv
+│   ├── stage3_stress_results.csv
+│   ├── grid_retest_results.csv
+│   └── figures/
+│
+├── videos/
+│   ├── overview.mp4
+│   ├── stage2/
+│   ├── stage3/
+│   └── failures/
+│
+├── assets/
+│   ├── setup_photo.jpg
+│   ├── workspace_grid.png
+│   └── camera_views.png
+│
+└── scripts/
+    ├── inspect_dataset.py
+    ├── summarize_rollouts.py
+    └── make_results_table.py
+```
+
+---
+
+## Software
+
+This project was built using:
+
+- LeRobot 0.6.1
+- PyTorch
+- OpenCV
+- FFmpeg
+- Ubuntu 22.04
+
+ACT training and real-robot deployment were performed using the LeRobot training and rollout pipelines.
+
+---
+
+## Reproduction
+
+The repository contains the commands used for:
+
+- Real-robot data collection
+- ACT training
+- Dataset inspection
+- Real-robot rollout evaluation
+
+Full raw datasets and checkpoints are not stored directly in the GitHub repository.
+
+<!-- TODO: Add dataset/checkpoint download links if released -->
+
+---
+
+## Future Work
+
+This project serves as an imitation-learning baseline for subsequent experiments with vision-language-action policies.
+
+Planned extensions include:
+
+- π0.5 fine-tuning on SO-101
+- Language-conditioned object selection
+- Shape insertion tasks
+- More structured failure-driven data collection
+- Reinforcement-learning post-training
+
+---
+
+## Acknowledgements
+
+This project is built on top of the [LeRobot](https://github.com/huggingface/lerobot) framework.
+
+---
+
+## License
+
+<!-- TODO: Add license information -->
