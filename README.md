@@ -337,7 +337,7 @@ R4: D, I
 R5: I
 ```
 
-<!-- TODO: Insert Stage 3 continuous-position success GIF -->
+[Watch the Stage 3 continuous-pose success example below.](#stage3-success-demo)
 
 [Watch the Stage 3 retry-success example below.](#stage3-retry-demo)
 
@@ -436,15 +436,16 @@ The repository contains selected examples rather than every recorded evaluation 
 Both Stage 2 examples preserve their complete 19.93-second episodes. Click either preview for the full-resolution MP4. Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
 <a id="stage3-retry-demo"></a>
+<a id="stage3-success-demo"></a>
 
 ### Stage 3
 
 | Continuous Pose | Retry / Recovery |
 |---|---|
-| <!-- TODO: Insert GIF --> | [![Stage 3 retry success, R4 episode 9 (index 8), position I, side view at 1× speed](assets/demos/stage3_retry_r4_ep09_side.gif)](videos/stage3_retry_r4_ep09_side.mp4) |
-| Continuous-position success | R4 · Episode 9 (index 8) · I · Side view · Retry success · 1× speed |
+| [![Stage 3 continuous-pose success, R2 episode 4 (index 3), side view at 1× speed](assets/demos/stage3_success_r2_ep04_side.gif)](videos/stage3_success_r2_ep04_side.mp4) | [![Stage 3 retry success, R4 episode 9 (index 8), position I, side view at 1× speed](assets/demos/stage3_retry_r4_ep09_side.gif)](videos/stage3_retry_r4_ep09_side.mp4) |
+| R2 · Episode 4 (index 3) · Side view · Continuous-pose success · 1× speed | R4 · Episode 9 (index 8) · I · Side view · Retry success · 1× speed |
 
-The retry example preserves the complete 19.9-second episode. Click the preview for the full-resolution MP4. Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
+Both Stage 3 examples preserve their complete episodes: 19.93 seconds for continuous-pose success and 19.9 seconds for retry success. Click either preview for the full-resolution MP4. Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
 ### Failure Cases
 
