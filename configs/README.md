@@ -1,19 +1,1 @@
-# 保存的训练配置
 
-主评估的运行参数另存于 [`rollout.json`](rollout.json)，由通用 `scripts/rollout.py` 使用。该文件不保存串口，执行时必须设置 `ROBOT_PORT`。主评估使用 100 个动作步，25 步仅作为显式选择的独立消融实验。详见 [rollout 用法](../docs/rollout.md)。
-
-以下文件复制自各实验的最终数字检查点，不是新运行生成的配置：
-
-| 目录 | 原实验 | 检查点 |
-|---|---|---|
-| `stage1_fixed/` | `act_fixed_v2_20k` | `020000` |
-| `stage2_grid/` | `act_grid5_t1_30k` | `030000` |
-| `stage3_mixed/` | `act_stage23_100ep_30k` | `030000` |
-
-每个目录包含 `train_config.json` 与策略 `config.json`。原始项目根目录已替换为 `.`，数据路径和输出路径相对于运行命令的当前工作目录。其余配置保留原值，包括历史 dataset repo_id；这些标识不代表数据已经公开发布。
-
-这些配置记录 batch size 8、随机种子 1000、ResNet18、chunk size 100、n_action_steps 100 等训练设置。实际 rollout 可能覆盖部分设置，不能据此推断所有评估时使用的参数。
-
-`scripts/train.sh stage1|stage2|stage3` 选择对应的 `train_config.json`，通过同一个 `lerobot-train` 命令启动训练。脚本将相对路径解析到项目根目录，支持环境变量覆盖及 `--dry-run`，拒绝覆盖已有输出。详见 [训练说明](../docs/training.md)。
-
-模型权重、归一化参数及训练恢复状态没有提交。仅有 JSON 文件不能加载训练后的策略。入口已用本机 LeRobot 0.6.1 做参数解析验证，未启动训练；历史源码提交及完整环境仍待记录。
