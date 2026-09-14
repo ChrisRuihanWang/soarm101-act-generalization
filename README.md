@@ -302,7 +302,7 @@ This indicates that ACT was able to generalize reasonably well to discrete spati
 
 [Watch the Stage 2 seen-position success example below.](#stage2-seen-demo)
 
-<!-- TODO: Insert Stage 2 unseen-position success GIF -->
+[Watch the Stage 2 unseen-position success example below.](#stage2-unseen-demo)
 
 <!-- TODO: Insert Stage 2 retry-success GIF -->
 
@@ -424,15 +424,16 @@ Representative real-robot rollouts are shown below.
 The repository contains selected examples rather than every recorded evaluation episode.
 
 <a id="stage2-seen-demo"></a>
+<a id="stage2-unseen-demo"></a>
 
 ### Stage 2
 
 | Seen Position | Unseen Position |
 |---|---|
-| [![Stage 2 seen-position success, R1 episode 4 (index 3), side view at 1× speed](assets/demos/stage2_seen_r1_ep04_side.gif)](videos/stage2_seen_r1_ep04_side.mp4) | <!-- TODO: Insert GIF --> |
-| R1 · Episode 4 (index 3) · Side view · Seen-position success · 1× speed | Unseen-position success |
+| [![Stage 2 seen-position success, R1 episode 4 (index 3), side view at 1× speed](assets/demos/stage2_seen_r1_ep04_side.gif)](videos/stage2_seen_r1_ep04_side.mp4) | [![Stage 2 unseen-position success, R2 episode 7 (index 6), side view at 1× speed](assets/demos/stage2_unseen_r2_ep07_side.gif)](videos/stage2_unseen_r2_ep07_side.mp4) |
+| R1 · Episode 4 (index 3) · Side view · Seen-position success · 1× speed | R2 · Episode 7 (index 6) · Side view · Unseen-position success · 1× speed |
 
-The seen-position example preserves the complete 19.93-second episode. Click the preview for the full-resolution MP4. Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
+Both Stage 2 examples preserve their complete 19.93-second episodes. Click either preview for the full-resolution MP4. Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
 <a id="stage3-retry-demo"></a>
 
