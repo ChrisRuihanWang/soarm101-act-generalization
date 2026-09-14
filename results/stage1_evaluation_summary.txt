@@ -1,0 +1,47 @@
+ACT Fixed-Position Baseline Evaluation
+
+Dataset:
+  fixed_v2_standardized_30ep
+  30 demonstrations
+
+Policy:
+  ACT
+  checkpoint: 020000
+  training steps: 20000
+  chunk_size: 100
+  n_action_steps: 100
+
+Robot:
+  SO-ARM101 follower
+
+Vision:
+  top camera: /dev/video2
+  side camera: /dev/video4
+  resolution: 640x480
+  fps: 30
+  codec: MJPG
+
+Rollout:
+  max_relative_target: 10.0 deg
+  episode_time: 20 s
+  evaluation episodes: 10
+
+Result:
+  successful episodes: 10
+  failed episodes: 0
+  empirical success rate: 100% (10/10)
+
+Dataset integrity:
+  episodes: 10
+  frames: 5974
+  fps: 30
+  recorded duration: 199.13 s
+
+Success criterion:
+  The cube is successfully picked from the fixed start position
+  and placed inside the fixed box during the episode.
+
+Notes:
+  Earlier rollout with max_relative_target=3.0 caused substantial
+  shoulder_lift/elbow_flex execution clipping and failed transport.
+  Increasing the limit to 10.0 degrees restored trajectory tracking.

@@ -1,0 +1,28 @@
+# Local datasets, checkpoints, and execution logs
+/data/
+/outputs/
+/logs/
+/notes/
+
+# Existing full-length analysis videos; curated media may be added later
+/results/F_failure_analysis/
+
+# Environments, caches, and local settings
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.env
+.env.*
+!.env.example
+/configs/*.local.*
+/.agents/
+/.codex/
+
+# Large experiment artifacts
+*.safetensors
+*.parquet
+*.tar
+*.tar.gz
+*.zip
