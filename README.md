@@ -339,7 +339,7 @@ R5: I
 
 <!-- TODO: Insert Stage 3 continuous-position success GIF -->
 
-<!-- TODO: Insert Stage 3 retry-success GIF -->
+[Watch the Stage 3 retry-success example below.](#stage3-retry-demo)
 
 ---
 
@@ -430,12 +430,16 @@ The repository contains selected examples rather than every recorded evaluation 
 | <!-- TODO: Insert GIF --> | <!-- TODO: Insert GIF --> |
 | Seen-position success | Unseen-position success |
 
+<a id="stage3-retry-demo"></a>
+
 ### Stage 3
 
 | Continuous Pose | Retry / Recovery |
 |---|---|
-| <!-- TODO: Insert GIF --> | <!-- TODO: Insert GIF --> |
-| Continuous-position success | Recovery after failed first grasp |
+| <!-- TODO: Insert GIF --> | [![Stage 3 retry success, R4 episode 9 (index 8), position I, side view at 1× speed](assets/demos/stage3_retry_r4_ep09_side.gif)](videos/stage3_retry_r4_ep09_side.mp4) |
+| Continuous-position success | R4 · Episode 9 (index 8) · I · Side view · Retry success · 1× speed |
+
+The retry example preserves the complete 19.9-second episode. Click the preview for the full-resolution MP4. Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
 ### Failure Cases
 
