@@ -300,7 +300,7 @@ Unseen: 16 / 20 = 80.0%
 
 This indicates that ACT was able to generalize reasonably well to discrete spatial locations that were not directly included in the training set.
 
-<!-- TODO: Insert Stage 2 seen-position success GIF -->
+[Watch the Stage 2 seen-position success example below.](#stage2-seen-demo)
 
 <!-- TODO: Insert Stage 2 unseen-position success GIF -->
 
@@ -423,12 +423,16 @@ Representative real-robot rollouts are shown below.
 
 The repository contains selected examples rather than every recorded evaluation episode.
 
+<a id="stage2-seen-demo"></a>
+
 ### Stage 2
 
 | Seen Position | Unseen Position |
 |---|---|
-| <!-- TODO: Insert GIF --> | <!-- TODO: Insert GIF --> |
-| Seen-position success | Unseen-position success |
+| [![Stage 2 seen-position success, R1 episode 4 (index 3), side view at 1× speed](assets/demos/stage2_seen_r1_ep04_side.gif)](videos/stage2_seen_r1_ep04_side.mp4) | <!-- TODO: Insert GIF --> |
+| R1 · Episode 4 (index 3) · Side view · Seen-position success · 1× speed | Unseen-position success |
+
+The seen-position example preserves the complete 19.93-second episode. Click the preview for the full-resolution MP4. Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
 <a id="stage3-retry-demo"></a>
 
