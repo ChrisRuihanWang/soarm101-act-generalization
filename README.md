@@ -448,13 +448,14 @@ Source episode and timing are recorded in [the demo manifest](videos/manifest.cs
 Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
 <a id="stage3-stress-demo"></a>
+<a id="stage3-failure-demo"></a>
 
 ### Failure Cases
 
 | Stress Test | Representative Failure |
 |---|---|
-| [![Stage 3 stress test, episode 2 (index 1), side view at 1× speed](assets/demos/stage3_stress_ep02_side.gif)](videos/stage3_stress_ep02_side.mp4) | <!-- TODO: Insert GIF --> |
-| Episode 2 (index 1) · Side view · Stress test · 1× speed | Failure after object displacement |
+| [![Stage 3 stress test, episode 2 (index 1), side view at 1× speed](assets/demos/stage3_stress_ep02_side.gif)](videos/stage3_stress_ep02_side.mp4) | [![Stage 3 representative failure, R1 episode 1 (index 0), side view at 1× speed](assets/demos/stage3_failure_r1_ep01_side.gif)](videos/stage3_failure_r1_ep01_side.mp4) |
+| Episode 2 (index 1) · Side view · Stress test · 1× speed | R1 · Episode 1 (index 0) · Side view · Representative failure · 1× speed |
 
 Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
