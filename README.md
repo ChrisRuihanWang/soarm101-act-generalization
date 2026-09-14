@@ -189,14 +189,15 @@ Batch size: 8
 
 For the 100-episode dataset, 30k training steps with a batch size of 8 correspond to roughly 5.95 dataset passes based on the total number of training samples processed.
 
-The complete training commands are available in:
+All stages share one training entry point, using the saved stage-specific configurations:
 
-```text
-configs/
-├── train_stage1_fixed.sh
-├── train_stage2_grid.sh
-└── train_stage3_mixed100.sh
+```bash
+./scripts/train.sh stage1
+./scripts/train.sh stage2
+./scripts/train.sh stage3
 ```
+
+Activate `lerobot_so101` first. Add `--dry-run` to preview the resolved configuration without training. Existing output paths are protected; set a new `OUTPUT_DIR` for a repeat run. Optional overrides: `STEPS`, `BATCH_SIZE`, `NUM_WORKERS`, `OUTPUT_DIR`, and `RUN_NAME`. See [training configuration and usage](docs/training.md) for verified dataset IDs, paths, and examples.
 
 ---
 
@@ -604,9 +605,9 @@ so101-act-generalization/
 ├── .gitignore
 │
 ├── configs/
-│   ├── train_stage1_fixed.sh
-│   ├── train_stage2_grid.sh
-│   ├── train_stage3_mixed100.sh
+│   ├── stage1_fixed/
+│   ├── stage2_grid/
+│   ├── stage3_mixed/
 │   └── rollout.json
 │
 ├── docs/
@@ -640,6 +641,7 @@ so101-act-generalization/
     ├── dataset_utils.py
     ├── play_episode.py
     ├── rollout.py
+    ├── train.sh
     ├── record_fixed.sh
     ├── record_grid5_t1_round.sh
     └── concat_F_rollouts.py
@@ -663,7 +665,7 @@ ACT training and real-robot deployment were performed using the LeRobot training
 
 ## Reproduction
 
-The repository provides data-collection scripts, dataset inspection tools, saved ACT training configurations, and a reusable rollout launcher using the confirmed evaluation settings. Executable training commands and the complete historical environment remain to be documented.
+The repository provides data-collection scripts, dataset inspection tools, a unified ACT training entry point with saved stage configurations, and a reusable rollout launcher using the confirmed evaluation settings. The training entry point was validated without starting training; the complete historical environment remains to be documented.
 
 The rollout launcher targets the current local LeRobot episodic deployment interface. Its command parsing and automated tests were checked without executing the robot; see [runtime details](docs/rollout.md).
 

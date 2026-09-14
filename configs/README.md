@@ -14,4 +14,6 @@
 
 这些配置记录 batch size 8、随机种子 1000、ResNet18、chunk size 100、n_action_steps 100 等训练设置。实际 rollout 可能覆盖部分设置，不能据此推断所有评估时使用的参数。
 
-模型权重、归一化参数及训练恢复状态没有提交。仅有 JSON 文件不能加载训练后的策略。训练命令及兼容的 LeRobot 源码版本待整理验证。
+`scripts/train.sh stage1|stage2|stage3` 选择对应的 `train_config.json`，通过同一个 `lerobot-train` 命令启动训练。脚本将相对路径解析到项目根目录，支持环境变量覆盖及 `--dry-run`，拒绝覆盖已有输出。详见 [训练说明](../docs/training.md)。
+
+模型权重、归一化参数及训练恢复状态没有提交。仅有 JSON 文件不能加载训练后的策略。入口已用本机 LeRobot 0.6.1 做参数解析验证，未启动训练；历史源码提交及完整环境仍待记录。
