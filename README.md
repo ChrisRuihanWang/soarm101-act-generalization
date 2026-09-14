@@ -492,8 +492,6 @@ The [demo manifest](videos/manifest.csv) records these six selected clips and th
 
 ## Failure Analysis
 
-The possible improvements below are proposals for future experiments; their benefits have not yet been validated.
-
 ### 1. More diverse demonstrations did not improve robustness
 
 The mixed 100-demonstration policy achieved **33.3%** on continuous poses and **40.7%** on the original grid, where Stage 2 achieved **86.7%**. Performance therefore declined even on the earlier evaluation distribution. Greater trajectory variation may have made learning harder, but these experiments do not isolate the effects of dataset size, pose diversity, or training budget.
