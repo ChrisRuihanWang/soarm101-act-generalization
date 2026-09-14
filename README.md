@@ -552,7 +552,35 @@ The main observations from this project are:
 
 ---
 
+## Analysis Tools
+
+The stage-specific checking scripts have been consolidated into one CLI. Supply the dataset root for the experiment you want to analyze:
+
+```bash
+# Dataset quality (omit --skip-video to validate video frame counts as well).
+python scripts/check.py dataset data/grid5_t1_50ep --expected-episodes 50 --skip-video
+
+# Compare every recorded rollout episode with demonstrations.
+python scripts/check.py rollout data/rollout_act_fixed_v2_eval10_cap10 --train data/fixed_v2_standardized_30ep --skip-video
+
+# Post-closure movement and a specified analysis threshold.
+python scripts/check.py transport data/rollout_act_fixed_v2_cap10_full1 --train data/fixed_v2_standardized_30ep --clamp 10
+
+# Locate an episode from LeRobot v3 metadata without opening a player.
+python scripts/play_episode.py data/grid5_t1_50ep 27 side --dry-run
+```
+
+Reports are written into a separate directory for each run under `logs/checks/<dataset>/`. FPS comes from dataset metadata; rollout and transport analysis process episodes individually. These offline checks do not determine task success or change robot control settings.
+
+Install the offline dependencies with `python -m pip install -r requirements.txt`; video tools also require FFmpeg/ffprobe/ffplay. Run regression tests with `python -m unittest discover -s tests -v`.
+
+Fixed-position recording now uses `bash scripts/record_fixed.sh DATA_ROOT REPO_ID [NUM_EPISODES] [RESUME]`. Grid5 retains its dedicated round-order script. See the [usage and migration guide](docs/script_usage.md) for all options and the [reproduction status](docs/reproducibility_status.md) for remaining limitations.
+
+---
+
 ## Repository Structure
+
+The layout includes planned documentation, training/rollout launchers, result tables, and media that are still being added. The current analysis tools are listed under `scripts/`; saved training JSON configurations are available under `configs/stage1_fixed/`, `configs/stage2_grid/`, and `configs/stage3_mixed/`.
 
 ```text
 so101-act-generalization/
@@ -596,9 +624,12 @@ so101-act-generalization/
 │   └── camera_views.png
 │
 └── scripts/
-    ├── inspect_dataset.py
-    ├── summarize_rollouts.py
-    └── make_results_table.py
+    ├── check.py
+    ├── dataset_utils.py
+    ├── play_episode.py
+    ├── record_fixed.sh
+    ├── record_grid5_t1_round.sh
+    └── concat_F_rollouts.py
 ```
 
 ---

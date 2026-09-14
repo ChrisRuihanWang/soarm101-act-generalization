@@ -9,7 +9,7 @@ if ! [[ "$ROUND" =~ ^([1-9]|10)$ ]]; then
     exit 1
 fi
 
-PROJECT="$HOME/robotics/so101_act_fixed"
+PROJECT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 DATA_ROOT="$PROJECT/data/grid5_t1_50ep"
 
 FOLLOWER_PORT="/dev/ttyACM1"

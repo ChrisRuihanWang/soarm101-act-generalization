@@ -1,62 +1,30 @@
-from pathlib import Path
-import pandas as pd
+"""Play any recorded episode using LeRobot v3 video metadata."""
+
+import argparse
+import shlex
 import subprocess
-import sys
 
-ROOT = Path.home() / "robotics/so101_act_fixed/data/fixed_v2_standardized_30ep"
-FPS = 30
+from dataset_utils import episode_video_segments, load_dataset
 
-if len(sys.argv) < 2:
-    print("Usage:")
-    print("python play_episode.py EPISODE [top|side]")
-    sys.exit(1)
 
-episode = int(sys.argv[1])
-camera = sys.argv[2] if len(sys.argv) >= 3 else "top"
+def main(argv=None):
+    cli = argparse.ArgumentParser(description=__doc__)
+    cli.add_argument("root", help="Dataset root containing meta/info.json")
+    cli.add_argument("episode", type=int)
+    cli.add_argument("camera", nargs="?", default="top")
+    cli.add_argument("--dry-run", action="store_true", help="Print segment commands without opening a player")
+    args = cli.parse_args(argv)
+    try:
+        dataset = load_dataset(args.root)
+        for path, start, duration in episode_video_segments(dataset, args.episode, args.camera):
+            command = ["ffplay", "-loglevel", "warning", "-ss", f"{start:.6f}",
+                       "-t", f"{duration:.6f}", "-autoexit", str(path)]
+            print(shlex.join(command))
+            if not args.dry_run:
+                subprocess.run(command, check=True)
+    except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as exc:
+        cli.exit(2, f"Error: {exc}\n")
 
-files = sorted((ROOT / "data").rglob("*.parquet"))
 
-df = pd.concat(
-    [pd.read_parquet(p) for p in files],
-    ignore_index=True
-)
-
-counts = (
-    df.groupby("episode_index")
-    .size()
-    .sort_index()
-)
-
-if episode not in counts.index:
-    raise ValueError(f"Episode {episode} not found")
-
-start_frame = int(
-    counts.loc[counts.index < episode].sum()
-)
-
-num_frames = int(counts.loc[episode])
-
-start_s = start_frame / FPS
-duration_s = num_frames / FPS
-
-video = (
-    ROOT
-    / "videos"
-    / f"observation.images.{camera}"
-    / "chunk-000"
-    / "file-000.mp4"
-)
-
-print(
-    f"Episode {episode}, {camera}: "
-    f"start={start_s:.2f}s, "
-    f"duration={duration_s:.2f}s"
-)
-
-subprocess.run([
-    "ffplay",
-    "-ss", str(start_s),
-    "-t", str(duration_s),
-    "-autoexit",
-    str(video),
-])
+if __name__ == "__main__":
+    main()
