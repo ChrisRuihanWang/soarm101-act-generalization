@@ -566,24 +566,6 @@ This experiment was treated as a qualitative inference ablation and was not incl
 
 ---
 
-## Key Takeaways
-
-The main observations from this project are:
-
-1. **ACT can achieve strong real-robot performance on a moderately varied discrete spatial distribution.**
-
-2. **Good performance on unseen discrete positions does not necessarily imply robust generalization to continuous pose variations.**
-
-3. **Increasing dataset size and diversity can introduce additional multimodality and trajectory inconsistency.**
-
-4. **A larger demonstration dataset does not automatically produce a stronger policy.**
-
-5. **Retry behavior is useful but highly dependent on whether the failed interaction keeps the environment close to the training distribution.**
-
-6. **Real-robot evaluation is essential: training loss alone was not predictive of final rollout robustness.**
-
----
-
 ## Analysis Tools
 
 The stage-specific checking scripts have been consolidated into one CLI. Supply the dataset root for the experiment you want to analyze:
