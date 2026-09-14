@@ -357,7 +357,7 @@ The only successful stress-test episode required a retry and completed the task 
 
 The stress test therefore indicates limited extrapolation toward more extreme workspace and orientation conditions.
 
-<!-- TODO: Insert stress-test GIF -->
+[Watch the stress-test example below.](#stage3-stress-demo)
 
 ---
 
@@ -447,12 +447,16 @@ Source episode and timing are recorded in [the demo manifest](videos/manifest.cs
 
 Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
+<a id="stage3-stress-demo"></a>
+
 ### Failure Cases
 
 | Stress Test | Representative Failure |
 |---|---|
-| <!-- TODO: Insert GIF --> | <!-- TODO: Insert GIF --> |
-| Difficult pose | Failure after object displacement |
+| [![Stage 3 stress test, episode 2 (index 1), side view at 1× speed](assets/demos/stage3_stress_ep02_side.gif)](videos/stage3_stress_ep02_side.mp4) | <!-- TODO: Insert GIF --> |
+| Episode 2 (index 1) · Side view · Stress test · 1× speed | Failure after object displacement |
+
+Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
 The complete numerical evaluation results are provided in the `results/` directory.
 
