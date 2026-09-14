@@ -10,4 +10,4 @@
 
 上述数据元信息记录格式版本 `v3.0`、30 FPS。格式版本不是 LeRobot 包的版本号。
 
-模型对应关系见 `configs/README.md`。未来发布用于推理的模型时，应提供完整 `pretrained_model/`，包括模型权重、预处理/后处理配置和归一化参数。恢复训练还需要相应 `training_state/`。
+模型对应关系见 [训练说明](training.md)。未来发布用于推理的模型时，应提供完整 `pretrained_model/`，包括模型权重、预处理/后处理配置和归一化参数。恢复训练还需要相应 `training_state/`。

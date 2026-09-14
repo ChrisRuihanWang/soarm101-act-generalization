@@ -31,6 +31,10 @@ The Stage 2 policy achieved strong performance on discrete spatial variations, w
 
 ## Hardware Setup
 
+<img src="assets/setup_photo.jpg" alt="Experimental setup with the SO-ARM101 arms, two mounted cameras, and the tabletop pick-and-place workspace" width="800">
+
+Experimental setup with the robot arms, top and side cameras, and fixed target box.
+
 - **Robot:** Waveshare SO-ARM101
 - **Control:** Leader-follower teleoperation for demonstration collection
 - **Policy deployment:** SO-ARM101 follower arm
@@ -55,8 +59,6 @@ gripper
 
 Both robot state and policy action are represented in the same 6-D joint space.
 
-<!-- TODO: Insert hardware setup photo here -->
-
 <!-- TODO: Insert top and side camera views here -->
 
 ---
@@ -70,6 +72,10 @@ The task is a real-robot pick-and-place problem:
 The target box, cameras, robot base, and general workspace remain fixed throughout the project.
 
 The object distribution is progressively expanded across the three stages.
+
+<img src="assets/workspace_grid.jpg" alt="Task workspace showing the A–I grid and the red cube inside the fixed target box" width="420">
+
+Task workspace: the marked A–I grid sits in front of the fixed target box. The red cube is shown inside the box.
 
 ---
 
@@ -126,7 +132,7 @@ The training distribution covers only part of the evaluation grid, allowing the 
 
 This stage evaluates whether ACT can generalize from demonstrated locations to nearby discrete positions that were not directly included in the training distribution.
 
-<!-- TODO: Insert Stage 2 grid illustration here -->
+[See the photographed A–I workspace grid in the task setup.](#task)
 
 ---
 
@@ -603,13 +609,15 @@ soarm101-act-generalization/
 ├── .gitignore
 ├── README.md
 ├── assets/
-│   └── demos/
-│       ├── stage2_seen_r1_ep04_side.gif
-│       ├── stage2_unseen_r2_ep07_side.gif
-│       ├── stage3_failure_r1_ep01_side.gif
-│       ├── stage3_retry_r4_ep09_side.gif
-│       ├── stage3_stress_ep02_side.gif
-│       └── stage3_success_r2_ep04_side.gif
+│   ├── demos/
+│   │   ├── stage2_seen_r1_ep04_side.gif
+│   │   ├── stage2_unseen_r2_ep07_side.gif
+│   │   ├── stage3_failure_r1_ep01_side.gif
+│   │   ├── stage3_retry_r4_ep09_side.gif
+│   │   ├── stage3_stress_ep02_side.gif
+│   │   └── stage3_success_r2_ep04_side.gif
+│   ├── setup_photo.jpg
+│   └── workspace_grid.jpg
 ├── configs/
 │   ├── README.md
 │   ├── rollout.json
@@ -660,7 +668,7 @@ The following additions remain pending; no placeholder data or media have been g
 | Item | Status |
 |---|---|
 | Episode-level results CSVs and result charts | Pending; see [results status](results/README.md) |
-| Hardware photos, workspace grid, camera-view images, and overview diagram/video | Pending |
+| Camera-view images and overview diagram/video | Pending; hardware and workspace-grid photos are included above |
 | Standalone hardware, calibration/teleoperation, data-collection, evaluation-protocol, and failure-analysis documents | Pending; existing README sections are retained |
 | Dataset/checkpoint download links and complete historical environment | Pending |
 | `LICENSE` and license selection | Pending |
