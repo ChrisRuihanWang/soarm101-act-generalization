@@ -289,6 +289,8 @@ Three rounds were performed:
 
 ## Results
 
+The numbers below preserve the recorded experiment summaries. Episode-level result CSVs have not yet been added, so these success rates cannot currently be recomputed from the committed files. See [available results and pending tables](results/README.md).
+
 ### Summary
 
 | Policy / Evaluation | Success Rate |
@@ -478,7 +480,7 @@ Source episode and timing are recorded in [the demo manifest](videos/manifest.cs
 
 Source episode and timing are recorded in [the demo manifest](videos/manifest.csv).
 
-The complete numerical evaluation results are provided in the `results/` directory.
+The [demo manifest](videos/manifest.csv) records these six selected clips and their source episodes. It is not a complete evaluation-results table. Unconfirmed fields remain blank, including the selected stress-test clip's outcome.
 
 ---
 
@@ -594,58 +596,74 @@ Fixed-position recording now uses `bash scripts/record_fixed.sh DATA_ROOT REPO_I
 
 ## Repository Structure
 
-The layout includes planned documentation, training/rollout launchers, result tables, and media that are still being added. The current analysis tools are listed under `scripts/`; saved training JSON configurations are available under `configs/stage1_fixed/`, `configs/stage2_grid/`, and `configs/stage3_mixed/`.
+The tree below lists the current version-controlled files. Local `data/`, `outputs/`, and `logs/` are excluded from Git.
 
 ```text
-so101-act-generalization/
-│
-├── README.md
-│
-├── LICENSE
+soarm101-act-generalization/
 ├── .gitignore
-│
-├── configs/
-│   ├── stage1_fixed/
-│   ├── stage2_grid/
-│   ├── stage3_mixed/
-│   └── rollout.json
-│
-├── docs/
-│   ├── hardware_setup.md
-│   ├── data_collection.md
-│   ├── training.md
-│   ├── evaluation_protocol.md
-│   ├── rollout.md
-│   └── failure_analysis.md
-│
-├── results/
-│   ├── stage2_grid_results.csv
-│   ├── stage3_continuous_results.csv
-│   ├── stage3_stress_results.csv
-│   ├── grid_retest_results.csv
-│   └── figures/
-│
-├── videos/
-│   ├── overview.mp4
-│   ├── stage2/
-│   ├── stage3/
-│   └── failures/
-│
+├── README.md
 ├── assets/
-│   ├── setup_photo.jpg
-│   ├── workspace_grid.png
-│   └── camera_views.png
-│
-└── scripts/
-    ├── check.py
-    ├── dataset_utils.py
-    ├── play_episode.py
-    ├── rollout.py
-    ├── train.sh
-    ├── record_fixed.sh
-    ├── record_grid5_t1_round.sh
-    └── concat_F_rollouts.py
+│   └── demos/
+│       ├── stage2_seen_r1_ep04_side.gif
+│       ├── stage2_unseen_r2_ep07_side.gif
+│       ├── stage3_failure_r1_ep01_side.gif
+│       ├── stage3_retry_r4_ep09_side.gif
+│       ├── stage3_stress_ep02_side.gif
+│       └── stage3_success_r2_ep04_side.gif
+├── configs/
+│   ├── README.md
+│   ├── rollout.json
+│   ├── stage1_fixed/
+│   │   ├── config.json
+│   │   └── train_config.json
+│   ├── stage2_grid/
+│   │   ├── config.json
+│   │   └── train_config.json
+│   └── stage3_mixed/
+│       ├── config.json
+│       └── train_config.json
+├── docs/
+│   ├── artifacts.md
+│   ├── reproducibility_status.md
+│   ├── rollout.md
+│   ├── script_usage.md
+│   └── training.md
+├── requirements.txt
+├── results/
+│   ├── README.md
+│   └── stage1_evaluation_summary.txt
+├── scripts/
+│   ├── check.py
+│   ├── concat_F_rollouts.py
+│   ├── dataset_utils.py
+│   ├── play_episode.py
+│   ├── record_fixed.sh
+│   ├── record_grid5_t1_round.sh
+│   ├── rollout.py
+│   └── train.sh
+├── tests/
+│   ├── test_analysis.py
+│   ├── test_rollout.py
+│   └── test_train.py
+└── videos/
+    ├── manifest.csv
+    ├── stage2_seen_r1_ep04_side.mp4
+    ├── stage2_unseen_r2_ep07_side.mp4
+    ├── stage3_failure_r1_ep01_side.mp4
+    ├── stage3_retry_r4_ep09_side.mp4
+    ├── stage3_stress_ep02_side.mp4
+    └── stage3_success_r2_ep04_side.mp4
 ```
+
+The following additions remain pending; no placeholder data or media have been generated:
+
+| Item | Status |
+|---|---|
+| Episode-level results CSVs and result charts | Pending; see [results status](results/README.md) |
+| Hardware photos, workspace grid, camera-view images, and overview diagram/video | Pending |
+| Standalone hardware, calibration/teleoperation, data-collection, evaluation-protocol, and failure-analysis documents | Pending; existing README sections are retained |
+| Dataset/checkpoint download links and complete historical environment | Pending |
+| `LICENSE` and license selection | Pending |
 
 ---
 
@@ -696,5 +714,7 @@ This project is built on top of the [LeRobot](https://github.com/huggingface/ler
 ---
 
 ## License
+
+Pending.
 
 <!-- TODO: Add license information -->
