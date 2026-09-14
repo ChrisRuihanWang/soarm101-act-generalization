@@ -492,9 +492,13 @@ The [demo manifest](videos/manifest.csv) records these six selected clips and th
 
 ## Failure Analysis
 
+The possible improvements below are proposals for future experiments; their benefits have not yet been validated.
+
 ### 1. More diverse demonstrations did not improve robustness
 
 The mixed 100-demonstration policy achieved **33.3%** on continuous poses and **40.7%** on the original grid, where Stage 2 achieved **86.7%**. Performance therefore declined even on the earlier evaluation distribution. Greater trajectory variation may have made learning harder, but these experiments do not isolate the effects of dataset size, pose diversity, or training budget.
+
+**Possible improvement:** Review demonstration consistency and compare dataset mixtures at equal training steps, then separately at equal dataset passes. Evaluate each variant on both the original grid and continuous poses to test whether data selection or additional training improves robustness.
 
 ---
 
@@ -503,6 +507,8 @@ The mixed 100-demonstration policy achieved **33.3%** on continuous poses and **
 The arm and gripper can obscure the cube in the top view during approach and closure, making its pose and grasp outcome harder to observe. The side camera provides another view, but whether it fully compensates for this occlusion has not been evaluated.
 
 Demonstration consistency also matters: differences in approach paths, pauses, and grasp timing can create conflicting action targets for similar observations. Camera placement and episode-level visual review should accompany dataset expansion. Numerical integrity checks alone do not establish demonstration quality; the contribution of these factors to the performance drop remains unmeasured.
+
+**Possible improvement:** Test a wrist-mounted camera for a close view of the cube and gripper during grasping. Collect synchronized wrist/top/side demonstrations and retrain for comparison with the current two-camera setup, measuring object visibility and task success. A wrist view may help with top-view occlusion, but its own occlusion and motion must also be assessed.
 
 ---
 
@@ -534,6 +540,8 @@ Second attempt fails
 
 This suggests that the observed retry behavior should not be interpreted as a robust general-purpose recovery policy.
 
+**Possible improvement:** Collect targeted recovery demonstrations from displaced-object states, including retreat, reapproach, and regrasp. Evaluate recovery separately from first-attempt success, with a stop/reset rule for states outside the recoverable workspace.
+
 ---
 
 ### 4. Shorter action execution horizon did not improve performance
@@ -553,6 +561,8 @@ Instead, the robot showed more abrupt motion changes between successive action c
 A possible explanation is that more frequent replanning exposed inconsistencies between independently predicted action chunks.
 
 This experiment was treated as a qualitative inference ablation and was not included in the main success-rate table.
+
+**Possible improvement:** Keep 100 action steps as the baseline and test intermediate horizons and action smoothing in separate ablations. Compare task success and motion abruptness under the same evaluation protocol before changing the main configuration.
 
 ---
 
