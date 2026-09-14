@@ -1,5 +1,11 @@
 # Offline analysis dependencies observed in the local lerobot_so101 environment.
 # Robot recording/training additionally needs the original LeRobot installation.
+Ubuntu 22.04
+LeRobot 0.6.1
+Python 3.12
+PyTorch version
+CUDA version
+ffmpeg
 numpy==2.2.6
 pandas==2.3.3
 pyarrow==25.0.1
